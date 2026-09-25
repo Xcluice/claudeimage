@@ -103,7 +103,14 @@ async function withAuth(req: Request, params: { secret: string }) {
   if (!expected || params.secret !== expected) {
     return new Response("Not found", { status: 404 });
   }
-  return mcpHandler(req);
+
+  // mcp-handler's internal router only recognizes an exact "/mcp" path.
+  // Strip the "/<secret>" prefix before handing the request off to it.
+  const url = new URL(req.url);
+  url.pathname = "/mcp";
+  const rewritten = new Request(url.toString(), req);
+
+  return mcpHandler(rewritten);
 }
 
 export async function GET(req: Request, ctx: { params: Promise<{ secret: string }> }) {
