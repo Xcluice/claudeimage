@@ -23,3 +23,4 @@ it as a single MCP tool: `generate_image`.
 npm install
 npm run dev
 ```
+
